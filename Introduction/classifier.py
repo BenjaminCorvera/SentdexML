@@ -26,16 +26,15 @@ forecast_col = "Adj. Close"
 # In ml, you can't work with NaN or null data
 df.fillna(-99999, inplace=True)
 
-forecast_out = int(math.ceil(0.01 * len(df)))
+forecast_out = int(math.ceil(0.1 * len(df)))
 df["label"] = df[forecast_col].shift(-forecast_out)
 
 # features
 X = np.array(df.drop(["label"], 1))
 X = preprocessing.scale(X)
-X = X[:-forecast_out]
-
 # stuff we are going to predict against (we don't have a y value for these)
 X_lately = X[-forecast_out:]
+X = X[:-forecast_out]
 
 df.dropna(inplace=True)
 # labels
@@ -46,11 +45,13 @@ X_train, X_test, y_train, y_test = model_selection.train_test_split(X, y, test_s
 clf = LinearRegression(n_jobs=-1)
 # fit is synonoumous with train
 clf.fit(X_train, y_train)
-with open('linearegression.pickle', 'wb') as f:
-    pickle.dump(clf, f)
 
-pickle_in = open('linearregression.pickle', 'rb')
-clf = pickle.load(pickle_in)
+# Pickling, saving classifier so training does not occur every time script is run
+# with open("linear_regression.pickle", "wb") as f:
+#     pickle.dump(clf, f)
+
+# pickle_in = open("linear_regression.pickle", "rb")
+# clf = pickle.load(pickle_in)
 
 # score is synonomous with test
 accuracy = clf.score(X_test, y_test)
