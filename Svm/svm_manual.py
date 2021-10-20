@@ -118,19 +118,19 @@ class Support_Vector_Machine:
         # positive support vector hyperplane
         psv1 = hyperplane(hyp_x_min, self.w, self.b, 1)
         psv2 = hyperplane(hyp_x_max, self.w, self.b, 1)
-        self.ax.plot([hyp_x_min, hyp_x_max], [psv1, psv2])
+        self.ax.plot([hyp_x_min, hyp_x_max], [psv1, psv2], "k")
 
         # (w.x + b) = -1
         # negative support vector hyperplane
         nsv1 = hyperplane(hyp_x_min, self.w, self.b, -1)
         nsv2 = hyperplane(hyp_x_max, self.w, self.b, -1)
-        self.ax.plot([hyp_x_min, hyp_x_max], [nsv1, nsv2])
+        self.ax.plot([hyp_x_min, hyp_x_max], [nsv1, nsv2], "k")
 
         # (w.x + b) = 0
         # decision boundary hyperplane
         db1 = hyperplane(hyp_x_min, self.w, self.b, 0)
         db2 = hyperplane(hyp_x_max, self.w, self.b, 0)
-        self.ax.plot([hyp_x_min, hyp_x_max], [db1, db2])
+        self.ax.plot([hyp_x_min, hyp_x_max], [db1, db2], "y--")
 
         plt.show()
 
@@ -142,4 +142,8 @@ data_dict = {
 
 svm = Support_Vector_Machine()
 svm.fit(data=data_dict)
+
+predict_us = [[0, 10], [1, 3], [3, 4], [3, 5], [5, 5], [5, 6], [6, -5], [5, 8]]
+for p in predict_us:
+    svm.predict(p)
 svm.visualize()
