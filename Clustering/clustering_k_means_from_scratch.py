@@ -6,7 +6,7 @@ import numpy as np
 import random
 
 X = np.array([[1, 2], [1.5, 1.8], [5, 8], [8, 8], [1, 0.6], [9, 11]])
-colors = 10*["g", "r", "c", "b", "k", "o"]
+colors = 10 * ["g", "r", "c", "b", "k", "o"]
 
 
 class K_Means:
@@ -17,8 +17,7 @@ class K_Means:
 
     def fit(self, data):
         self.centroids = {}
-        random.shuffle(data)
-
+        # random.shuffle(data)
         for i in range(self.k):
             self.centroids[i] = data[i]
 
@@ -27,35 +26,38 @@ class K_Means:
             self.classifications = {}
             for i in range(self.k):
                 self.classifications[i] = []
-                for featureset in data:
-                    distances = [
-                        np.linalg.norm(featureset - self.centroids[centroid])
-                        for centroid in self.centroids
-                    ]
-                    classification = distances.index(min(distances))
-                    self.classifications[classification].append(featureset)
+            for featureset in data:
+                distances = [
+                    np.linalg.norm(featureset - self.centroids[centroid])
+                    for centroid in self.centroids
+                ]
+                classification = distances.index(min(distances))
+                self.classifications[classification].append(featureset)
 
-                prev_cetroids = dict(self.centroids)
+            prev_cetroids = dict(self.centroids)
 
-                for classification in self.classifications:
-                    pass
-                    # axis = 1 select columns, axis = 0 select rows
-                    # self.centroids[classification] = np.average(self.classifications[classification],axis=0)
-                optimized = True
-                for c in self.centroids:
-                    original_cetroid = prev_cetroids[c]
-                    current_centroid = self.centroids[c]
-                    if (
-                        np.sum(
-                            (current_centroid - original_cetroid)
-                            / original_cetroid
-                            * 100.0
-                        )
-                        > self.tol
-                    ):
-                        optimized = False
-                if optimized:
-                    break
+            for classification in self.classifications:
+                # axis = 1 select columns, axis = 0 select rows
+                self.centroids[classification] = np.average(
+                    self.classifications[classification], axis=0
+                )
+
+            optimized = True
+
+            for c in self.centroids:
+                original_centroid = prev_cetroids[c]
+                current_centroid = self.centroids[c]
+                if (
+                    np.sum(
+                        (current_centroid - original_centroid)
+                        / original_centroid
+                        * 100.0
+                    )
+                    > self.tol
+                ):
+                    optimized = False
+            if optimized:
+                break
 
     def predict(self, data):
         distances = [
@@ -70,9 +72,10 @@ clf = K_Means()
 clf.fit(X)
 
 for centroid in clf.centroids:
+    centroid_coord = list(clf.centroids[centroid])
     plt.scatter(
-        clf.centroids[centroid][0],
-        clf.centroids[centroid][1],
+        centroid_coord[0],
+        centroid_coord[1],
         marker="o",
         color="k",
         s=150,
@@ -83,11 +86,22 @@ for classification in clf.classifications:
     color = colors[classification]
     for featureset in clf.classifications[classification]:
         plt.scatter(
-            featureset[centroid][0],
-            featureset[centroid][1],
+            featureset[0],
+            featureset[1],
             marker="x",
             color=color,
             s=150,
             linewidths=5,
         )
+unknowns = np.array([[1, 3], [8, 9], [0, 3], [5, 4], [6, 4]])
+for unknown in unknowns:
+    classification = clf.predict(unknown)
+    plt.scatter(
+        unknown[0],
+        unknown[1],
+        marker="x",
+        color=colors[classification],
+        s=150,
+        linewidths=5,
+    )
 plt.show()
