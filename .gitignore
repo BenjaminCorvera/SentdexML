@@ -9,3 +9,6 @@
 .history/
 .env
 *.pickle
+
+# training data directories
+Deep Learning/Cat_Dogs/kagglecatsanddogs_3367a
